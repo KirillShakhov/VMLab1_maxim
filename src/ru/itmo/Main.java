@@ -4,14 +4,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 import static java.lang.Math.abs;
 
 public class Main {
     static final Scanner scanner = new Scanner(System.in);
-
     public static void main(String[] args) {
         System.out.println("1. Ввод с клавиатуры\n2. Ввод с файла");
         String line = scanner.nextLine();
@@ -55,18 +53,7 @@ public class Main {
             solve(matrix, eps);
             return;
         }
-        matrix = permuteMatrixHelper(matrix);
-        if (matrix != null) {
-            for(int i = 0; i < matrix.length-1; i++){
-                for(int j = 0; j < matrix.length; j++){
-                    System.out.print(matrix[i][j]+" ");
-                }
-                System.out.println();
-            }
-            solve(matrix, eps);
-        } else {
-            System.out.println("Диагонального преобладание не удалось достичь");
-        }
+        solve(permuteMatrixHelper(matrix), eps);
     }
 
     // Метод для проверки матрицы на диагональное преаобладание
@@ -87,31 +74,42 @@ public class Main {
         sum -= abs(matrix[line][line]);
         return sum < abs(matrix[line][line]);
     }
-
-    //Метод для перестановки строк
-    public static double[][] permuteMatrixHelper(double[][] matrix) {
-        ArrayList<Integer> arrayList = new ArrayList<>();
-        for (int i = 0; i < matrix.length-1; i++) {
-            if(checkDiagonal(matrix, i))arrayList.add(i);
+    public static int checkLine(double[] line){
+        //Сумма всех значений в линии
+        double sum = 0.0;
+        for (int i = 0; i < line.length-1; i++) {
+            double abs = abs(line[i]);
+            sum += abs;
         }
-        int size = matrix.length-1;
-        for(int i=0; i < size;i++){
-            if(!arrayList.contains(size - (i + 1)) && !arrayList.contains(size - i)) {
-                for (int j = 0; j < matrix.length; j++) {
-                    double tmp = matrix[size - (i + 1)][j];
-                    matrix[size - (i + 1)][j] = matrix[size - i][j];
-                    matrix[size - i][j] = tmp;
-                }
-                if(checkDiagonal(matrix, size - i))arrayList.add(size - i);
-                if(checkDiagonal(matrix, size - (i + 1)))arrayList.add(size - (i + 1));
+        for(int i = 0; i < line.length; i++){
+            sum -= abs(line[i]);
+            if(sum < abs(line[i])) {
+                return i;
             }
         }
-        if(checkDiagonals(matrix)){
-            return matrix;
+        return -1;
+    }
+
+
+    //Метод для перестановки строк
+    private static double[][] permuteMatrixHelper(double[][] matrix) {
+        double[][] result = new double[matrix.length][matrix.length+1];
+        HashMap<double[], Integer> map1 = new HashMap<>();
+        for (double[] line : matrix) {
+            int value = checkLine(line);
+            if (value != -1) {
+                map1.put(line, value);
+            } else {
+                System.out.println("Диагонального преобладание не удалось достичь");
+                System.exit(0);
+            }
         }
-        else{
-            return null;
-        }
+        ArrayList<double[]> arrayList = new ArrayList<>();
+        map1.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .forEach(x -> arrayList.add(x.getKey())); // или любой другой конечный метод
+        result = arrayList.toArray(result);
+        return result;
     }
 
     //Метод простых итераций, на вход приходит матрица[N][N+1] и точность
