@@ -53,7 +53,20 @@ public class Main {
             solve(matrix, eps);
             return;
         }
-        solve(permuteMatrixHelper(matrix), eps);
+        printMatrix(matrix);
+        matrix = permuteMatrixHelper(matrix);
+        System.out.println("Произведена перестановка строк");
+        printMatrix(matrix);
+        solve(matrix, eps);
+    }
+
+    public static void printMatrix(double[][] matrix){
+        for (double[] line : matrix){
+            for(double i : line){
+                System.out.print(i+" ");
+            }
+            System.out.println();
+        }
     }
 
     // Метод для проверки матрицы на диагональное преаобладание
