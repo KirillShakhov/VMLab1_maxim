@@ -49,6 +49,7 @@ public class Main {
         }
     }
 
+    // Нахождение решения с проверкой и исправлением диагонального преобладания
     public static void findSolution(double[][] matrix, double eps) {
         if (checkDiagonals(matrix)) {
             solve(matrix, eps);
@@ -68,6 +69,7 @@ public class Main {
         }
     }
 
+    // Метод для проверки матрицы на диагональное преаобладание
     public static boolean checkDiagonals(double[][] matrix) {
         boolean isD = true;
         for (int i = 0; i < matrix.length-1; i++) {
@@ -76,6 +78,7 @@ public class Main {
         return isD;
     }
 
+    // Метод для проверки строки на диагональное преобладание. На вход приходит матрица и номер строки.
     public static boolean checkDiagonal(double[][] matrix, int line){
         double sum = 0;
         for (double i : matrix[line]) {
@@ -85,6 +88,7 @@ public class Main {
         return sum < abs(matrix[line][line]);
     }
 
+    //Метод для перестановки строк
     public static double[][] permuteMatrixHelper(double[][] matrix) {
         ArrayList<Integer> arrayList = new ArrayList<>();
         for (int i = 0; i < matrix.length-1; i++) {
@@ -109,6 +113,8 @@ public class Main {
             return null;
         }
     }
+
+    //Метод простых итераций, на вход приходит матрица[N][N+1] и точность
     private static void solve(double[][] matrix, double eps) {
         double[] x= new double[matrix.length];
         double norma = 0, sum, t;
@@ -147,6 +153,7 @@ public class Main {
             System.out.println("del x"+(i+1)+" = "+String.format("%.6f",S - getVector(matrix)[i]));
         }
     }
+    // Получение вектора свободных членов из матрицы[N][N+1]
     public static double[] getVector(double[][] matrix){
         double [] vector = new double[matrix.length];
         for(int i = 0; i < matrix.length; i++){
@@ -154,7 +161,7 @@ public class Main {
         }
         return vector;
     }
-
+    // Метод для получения матрицы с клавиатуры
     public static double[][] createMatrixFromKeyBoard(){
         try {
             System.out.println("Введите размерность матрицы");
@@ -183,7 +190,7 @@ public class Main {
         }
         return null;
     }
-
+    // Метод для получение матрицы из файла
     public static double[][] readMatrixFromFile(String fileName) {
         try {
             BufferedReader file = new BufferedReader(new FileReader(new File(fileName)));
