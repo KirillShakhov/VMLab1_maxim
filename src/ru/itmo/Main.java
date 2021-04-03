@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.IntStream;
 
 import static java.lang.Math.abs;
 
@@ -69,7 +70,7 @@ public class Main {
         }
     }
 
-    // Метод для проверки матрицы на диагональное преаобладание
+    // Метод для проверки матрицы на диагональное преобладание
     public static boolean checkDiagonals(double[][] matrix) {
         boolean isD = true;
         int i = 0;
@@ -79,6 +80,8 @@ public class Main {
         }
         return isD;
     }
+    // Проверяет линию на диагональное преобладание. Возвращает номер строки на котором должна стоять строка.
+    // При возврате -1 значит, что диагонального преобладания нет.
     public static int checkLine(double[] line){
         //Сумма всех значений в линии
         double sum = 0.0;
@@ -94,7 +97,6 @@ public class Main {
         }
         return -1;
     }
-
 
     //Метод для перестановки строк
     private static double[][] permuteMatrixHelper(double[][] matrix) {
@@ -119,11 +121,29 @@ public class Main {
 
     //Метод простых итераций, на вход приходит матрица[N][N+1] и точность
     private static void solve(double[][] matrix, double eps) {
-        double[] x= new double[matrix.length];
-        double norma = 0, sum, t;
+        // В данном методе используются лямбда выражения и Stream API
+
+        // String.format("%.6f", int) используется для формирования вывод.
+        // Где int значение которое надо округлить, 6 это количество знаков после запятой.
+
+        // IntStream.range(0, matrix.length) создание массива размером matrix.length [0, 1, ... matrix.length]
+        // .mapToDouble(i -> 0) заполнение массива 0ми // Можно поменять на 1
+        double[] x = IntStream.range(0, matrix.length).mapToDouble(i -> 1).toArray();
+
+
+        double sum, t, counter=0, norma;
+
+
+        // Вывод первой 0ой итерации.
+        System.out.println("Итерация: " + (counter++));
+        IntStream.range(0, matrix.length).mapToObj(i -> "x" + i + " = " + x[i]).forEach(System.out::println);
+        System.out.println("///////////////////////////////");
+
+
+        // Начало
         do
         {
-            ArrayList<Double> es = new ArrayList<>();
+            System.out.println("Итерация: " + (counter++));
             norma = 0;
             //  k++;
             for(int i = 0; i < matrix.length; i++)
@@ -137,15 +157,20 @@ public class Main {
                         sum += matrix[i][j] * x[j];
                 }
                 x[i] = (getVector(matrix)[i] - sum) / matrix[i][i];
-                es.add(abs(x[i] - t));
-                if (abs(x[i] - t) > norma)
-                    norma = abs(x[i] - t);
+                System.out.println("x"+i+" = "+x[i] + " | eps"+i+" = "+abs(x[i] - t));
+                if (abs(x[i] - t) > norma) norma = abs(x[i] - t);
             }
-            System.out.println("Итерация: ");
+            System.out.println("///////////////////////////////");
         }
-        while(norma > eps);
-        System.out.println("Результат");
+        while(norma > eps || counter >= 100);
+
+
+        // Вывод результатов
+        System.out.println("Количество итераций: " + counter);
+        // Вывод x[]
+        System.out.println("Результат:");
         for(int i = 0; i < x.length; i++){ System.out.println("x"+(i+1)+" = "+String.format("%.6f",x[i])); }
+        // Вывод del x
         System.out.println("Вектор невязки:");
         for(int i = 0; i < matrix.length; i++)
         {
