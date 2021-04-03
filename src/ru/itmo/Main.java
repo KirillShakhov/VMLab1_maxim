@@ -19,6 +19,7 @@ public class Main {
             double eps;
             while (true) {
                 try {
+                    System.out.println("Введите точность:");
                     String buffer = scanner.nextLine();
                     eps = Double.parseDouble(buffer);
                     break;
@@ -140,6 +141,7 @@ public class Main {
                 if (abs(x[i] - t) > norma)
                     norma = abs(x[i] - t);
             }
+            System.out.println("Итерация: ");
         }
         while(norma > eps);
         System.out.println("Результат");
@@ -179,7 +181,6 @@ public class Main {
             for (int i = 0; i < size;i++) {
                 buffer = scanner.nextLine();
                 arr[i] = buffer.trim().split(" ");
-                buffer = "";
             }
             for (int i = 0; i < size;i++){
                 for (int j = 0; j < size+1;j++) {
