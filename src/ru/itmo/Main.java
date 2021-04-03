@@ -49,17 +49,16 @@ public class Main {
 
     // Нахождение решения с проверкой и исправлением диагонального преобладания
     public static void findSolution(double[][] matrix, double eps) {
-        if (checkDiagonals(matrix)) {
-            solve(matrix, eps);
-            return;
+        printMatrix(matrix);
+        if (!checkDiagonals(matrix)) {
+            matrix = permuteMatrixHelper(matrix);
+            System.out.println("Произведена перестановка строк");
+            printMatrix(matrix);
         }
-        printMatrix(matrix);
-        matrix = permuteMatrixHelper(matrix);
-        System.out.println("Произведена перестановка строк");
-        printMatrix(matrix);
         solve(matrix, eps);
     }
 
+    //Вывод матрицы
     public static void printMatrix(double[][] matrix){
         for (double[] line : matrix){
             for(double i : line){
@@ -72,20 +71,12 @@ public class Main {
     // Метод для проверки матрицы на диагональное преаобладание
     public static boolean checkDiagonals(double[][] matrix) {
         boolean isD = true;
-        for (int i = 0; i < matrix.length-1; i++) {
-            if(!checkDiagonal(matrix, i)) isD = false;
+        int i = 0;
+        for (double[] line : matrix) {
+            if(checkLine(line) != i) isD = false;
+            i++;
         }
         return isD;
-    }
-
-    // Метод для проверки строки на диагональное преобладание. На вход приходит матрица и номер строки.
-    public static boolean checkDiagonal(double[][] matrix, int line){
-        double sum = 0;
-        for (double i : matrix[line]) {
-            sum += abs(i);
-        }
-        sum -= abs(matrix[line][line]);
-        return sum < abs(matrix[line][line]);
     }
     public static int checkLine(double[] line){
         //Сумма всех значений в линии
