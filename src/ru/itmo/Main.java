@@ -115,6 +115,14 @@ public class Main {
         map1.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue())
                 .forEach(x -> arrayList.add(x.getKey())); // или любой другой конечный метод
+        int i = map1.size()-1;
+        for(Map.Entry<double[], Integer> e : map1.entrySet()){
+            if(e.getValue() != i){
+                System.out.println("Диагонального преобладание не удалось достичь");
+                System.exit(0);
+            }
+            i--;
+        }
         result = arrayList.toArray(result);
         return result;
     }
