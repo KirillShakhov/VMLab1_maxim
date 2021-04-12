@@ -7,15 +7,17 @@ public class ResultSet {
     private ArrayList<Double> x = new ArrayList<>();
     private double[][] matrix;
     private double[][] triangleMatrix;
+    private double[] residuals;
 
     public void add(String s){
         result.add(s);
     }
     public void print(){
+        //String.format("%.15f", i);
         System.out.println("Матрица:");
-        printMatrix();
+        printMatrix(matrix);
         System.out.println("Треугольная матрица:");
-        printTriangleMatrix();
+        printMatrix(triangleMatrix);
         System.out.println("Определитель:");
 //        det()
         System.out.println("Вектор неизвестных:");
@@ -23,33 +25,20 @@ public class ResultSet {
         for(Double item : x){
             System.out.println("x"+(i++)+" = "+item);
         }
+        System.out.println("Вектор невязок:");
+        i = 1;
+        for(Double item : residuals){
+            System.out.println("del x"+(i++)+" = "+item);
+        }
     }
 
     //Вывод матрицы
-    public void printMatrix(){
-        if(matrix == null){
-            System.out.println("Матрица не установлена в ResultSet");
-        }
-        else {
-            for (double[] line : matrix) {
-                for (double i : line) {
-                    System.out.print(i + " ");
-                }
-                System.out.println();
+    public void printMatrix(double[][] matrix){
+        for (double[] line : matrix) {
+            for (double i : line) {
+                System.out.print(i + " ");
             }
-        }
-    }
-    public void printTriangleMatrix(){
-        if(triangleMatrix == null){
-            System.out.println("Треугольная матрица не установлена в ResultSet");
-        }
-        else {
-            for (double[] line : triangleMatrix) {
-                for (double i : line) {
-                    System.out.print(i + " ");
-                }
-                System.out.println();
-            }
+            System.out.println();
         }
     }
 
@@ -82,5 +71,13 @@ public class ResultSet {
 
     public void setTriangleMatrix(double[][] triangleMatrix) {
         this.triangleMatrix = triangleMatrix;
+    }
+
+    public double[] getResiduals() {
+        return residuals;
+    }
+
+    public void setResiduals(double[] residuals) {
+        this.residuals = residuals;
     }
 }
