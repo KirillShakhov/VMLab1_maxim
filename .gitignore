@@ -1,2 +1,5 @@
 # Project exclude paths
 /out/
+/target/
+/vm1_maxim.iml
+/.idea/
