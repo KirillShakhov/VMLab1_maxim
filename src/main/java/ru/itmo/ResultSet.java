@@ -8,6 +8,7 @@ public class ResultSet {
     private double[][] matrix;
     private double[][] triangleMatrix;
     private double[] residuals;
+    private double det;
 
     public void add(String s){
         result.add(s);
@@ -18,17 +19,16 @@ public class ResultSet {
         printMatrix(matrix);
         System.out.println("Треугольная матрица:");
         printMatrix(triangleMatrix);
-        System.out.println("Определитель:");
-//        det()
+        System.out.println("Определитель: "+det);
         System.out.println("Вектор неизвестных:");
         int i = 1;
         for(Double item : x){
-            System.out.println("x"+(i++)+" = "+item);
+            System.out.println("x"+(i++)+" = "+String.format("%.15f", item));
         }
         System.out.println("Вектор невязок:");
         i = 1;
         for(Double item : residuals){
-            System.out.println("del x"+(i++)+" = "+item);
+            System.out.println("del x"+(i++)+" = "+String.format("%.15f", item));
         }
     }
 
@@ -79,5 +79,13 @@ public class ResultSet {
 
     public void setResiduals(double[] residuals) {
         this.residuals = residuals;
+    }
+
+    public double getDet() {
+        return det;
+    }
+
+    public void setDet(double det) {
+        this.det = det;
     }
 }

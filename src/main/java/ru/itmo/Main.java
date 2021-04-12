@@ -51,16 +51,20 @@ public class Main {
 
     /*Метод Гаусса*/
     public static ResultSet gauss(double[][] matrix) {
-        double det = 1;
         /*
         ResultSet - Класс который хранит все результаты метода.
         Нужен для избежания "Говорящих методов"(Когда методы используют System.out.println)
          */
         ResultSet resultSet  = new ResultSet();
+        /*
+        Нахождение определителя
+         */
+        resultSet.setDet(det(matrix));
+
         double buffer;
         double[] x = new double[matrix.length];
         /*
-        Прямой ход - преобразование в треугольно
+        Прямой ход - преобразование в треугольную матрицу
         */
         for (int i = 0; i < matrix.length; i++) {
             buffer = matrix[i][i];
@@ -71,11 +75,9 @@ public class Main {
                 buffer = matrix[j][i];
                 for (int k = matrix.length; k >= i; k--) {
                     matrix[j][k] -= buffer * matrix[i][k];
-                    det*=buffer * matrix[i][k];
                 }
             }
         }
-        System.out.println("?????? "+det);
         /*
         Обратный ход -
         */
@@ -106,5 +108,42 @@ public class Main {
             residuals[i] = S - matrix[i][matrix.length];
         }
         return residuals;
+    }
+    public static double det(double[][] matrix){
+        double EPS = 1E-9;
+        double det = 1;
+        int n = matrix.length;
+        for (int i=0; i<n; ++i) {
+            int k = i;
+            for (int j=i+1; j<n; ++j) {
+                if (Math.abs(matrix[j][i]) > Math.abs(matrix[k][i])) {
+                    k = j;
+                }
+            }
+            if (Math.abs (matrix[k][i]) < EPS) {
+                det = 0;
+                break;
+            }
+
+            //swab
+            for(int j = 0; j < n; j++){
+                double t = matrix[i][j];
+                matrix[i][j] = matrix[k][j];
+                matrix[k][j]=t;
+            }
+            if (i != k) det = -det;
+            det *= matrix[i][i];
+            for (int j=i+1; j<n; ++j) {
+                matrix[i][j] /= matrix[i][i];
+            }
+            for (int j=0; j<n; ++j) {
+                if (j != i && Math.abs(matrix[j][i]) > EPS) {
+                    for (int t = i + 1; t < n; ++t) {
+                        matrix[j][t] -= matrix[i][t] * matrix[j][i];
+                    }
+                }
+            }
+        }
+        return det;
     }
 }
