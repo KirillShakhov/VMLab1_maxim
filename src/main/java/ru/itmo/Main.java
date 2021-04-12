@@ -6,15 +6,23 @@ import java.util.Scanner;
 public class Main {
     static final Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
+
+        // \n - перенос на другую строку
         System.out.println("1. Ввод с клавиатуры\n2. Ввод с файла\n3. Генерация рандомной матрицы");
+        // Ввод с клавиатуры
         String line = scanner.nextLine();
+
+
         if (line.equals("1")) {
             System.out.println("Вводим матрицу с консоли");
+            // Получение матрицы с клавиатуры
             double[][] matrix = Utils.createMatrixFromKeyBoard();
+            // Нахождение решения
             findSolution(matrix);
         } else if (line.equals("2")) {
             System.out.println("Вводим матрицу с файла");
             double[][] matrix;
+            // while true - бесконечный цикл, пока не будет введен правильный файл.
             while (true) {
                 try {
                     System.out.println("Имя файла:");
@@ -25,13 +33,14 @@ public class Main {
                     e.printStackTrace();
                 }
             }
+            // Нахождение решения
             findSolution(matrix);
         } else if (line.equals("3")) {
             System.out.println("Генерация рандомной матрицы");
             double[][] matrix;
             while (true) {
                 try {
-                    System.out.println("Какой размер матрицы::");
+                    System.out.println("Какой размер матрицы:");
                     int size = Integer.parseInt(scanner.nextLine());
                     matrix = Utils.createRandomMatrix(size);
                     break;
@@ -39,13 +48,16 @@ public class Main {
                     e.printStackTrace();
                 }
             }
+            // Нахождение решения
             findSolution(matrix);
         }
     }
 
     // Нахождение решения с проверкой и исправлением диагонального преобладания
     public static void findSolution(double[][] matrix) {
+        // Получение решения
         Result resultSet = gauss(matrix);
+        // вызов метода print, который печатает результат из Result
         resultSet.print();
     }
 
@@ -100,13 +112,19 @@ public class Main {
          */
         resultSet.setX(x);
         /*
-        Вычисление и добавления вектора невязок
+        Вычисление и добавления вектора невязок.
+        original_matrix - оригинальная матрица, отличается от треугольной, но разницы нет.
+        x - вектор с найденными x1, x2, ..., xn.
          */
         resultSet.setResiduals(findResiduals(original_matrix, x));
         return resultSet;
     }
     /*
-    Нахождение невязок
+    Нахождение невязок.
+    Методом подстановки в матрицу.
+    x1, x2, ..., xn подставляются в матрицу на свои места
+    и ищется разница между результатом и результатом из вектора свободных членов.
+    Подробнее: https://www.cyberforum.ru/numerical-methods/thread1224615.html
      */
     public static double[] findResiduals(double[][] matrix, double[] x) {
         double[] residuals = new double[matrix.length];
@@ -123,19 +141,24 @@ public class Main {
     }
 
     /*
-    Нахождение определителя
+    Нахождение определителя методом Гаусса.
+    Можно было бы встроить в основной метод Гаусса, но так быстрее.
+    EPS нужен для округления в сторону нуля, тк double дает погрешность.
+    Math.abs - метод для получения модуля.
      */
     public static double det(double[][] matrix){
         double EPS = 1E-9;
         double det = 1;
-        int n = matrix.length;
-        for (int i=0; i<n; ++i) {
+        for (int i=0; i<matrix.length; ++i) {
             int k = i;
-            for (int j=i+1; j<n; ++j) {
+
+            for (int j=i+1; j<matrix.length; ++j) {
                 if (Math.abs(matrix[j][i]) > Math.abs(matrix[k][i])) {
                     k = j;
                 }
             }
+
+            // Округление к нулю
             if (Math.abs (matrix[k][i]) < EPS) {
                 det = 0;
                 break;
@@ -144,21 +167,23 @@ public class Main {
             /*
             swab - обмен местами строки i и k
              */
-            for(int j = 0; j < n; j++){
+            for(int j = 0; j < matrix.length; j++){
                 double t = matrix[i][j];
                 matrix[i][j] = matrix[k][j];
                 matrix[k][j]=t;
             }
 
+
             if (i != k) det = -det;
 
             det *= matrix[i][i];
-            for (int j=i+1; j<n; ++j) {
+            for (int j=i+1; j<matrix.length; ++j) {
                 matrix[i][j] /= matrix[i][i];
             }
-            for (int j=0; j<n; ++j) {
+
+            for (int j=0; j<matrix.length; ++j) {
                 if (j != i && Math.abs(matrix[j][i]) > EPS) {
-                    for (int t = i + 1; t < n; ++t) {
+                    for (int t = i + 1; t < matrix.length; ++t) {
                         matrix[j][t] -= matrix[i][t] * matrix[j][i];
                     }
                 }

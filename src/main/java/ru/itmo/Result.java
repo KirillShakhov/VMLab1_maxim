@@ -2,6 +2,9 @@ package ru.itmo;
 
 import java.util.ArrayList;
 
+/*
+Класс нужен для сбора данных и для формирования вывода.
+ */
 public class Result {
     private ArrayList<ArrayList<Double>> matrix = new ArrayList<>();
     private ArrayList<ArrayList<Double>> triangle = new ArrayList<>();
@@ -10,7 +13,10 @@ public class Result {
     private double[] residuals;
 
     public void print(){
-        //String.format("%.15f", i);
+        /*
+        String.format("%.15f", i) - Округление переменной i до 15 знаков.
+        Может понадобиться для преобразования -8.12321-e9 в -0.000000000812321
+         */
         System.out.println("Матрица:");
         printMatrix(this.matrix);
         System.out.println("Треугольная матрица:");

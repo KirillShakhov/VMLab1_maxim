@@ -6,6 +6,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
+
+/*
+Тут собраны методы для получения матриц. С консоли, из файла, генерация.
+ */
 public class Utils {
     private static Scanner scanner = new Scanner(System.in);
     // Метод для получения матрицы с клавиатуры
