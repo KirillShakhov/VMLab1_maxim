@@ -1,6 +1,7 @@
 package ru.itmo;
-import java.util.*;
 
+
+import java.util.Scanner;
 
 public class Main {
     static final Scanner scanner = new Scanner(System.in);
@@ -44,18 +45,20 @@ public class Main {
 
     // Нахождение решения с проверкой и исправлением диагонального преобладания
     public static void findSolution(double[][] matrix) {
-        ResultSet resultSet = gauss(matrix);
-        resultSet.setMatrix(matrix);
+        Result resultSet = gauss(matrix);
         resultSet.print();
     }
 
     /*Метод Гаусса*/
-    public static ResultSet gauss(double[][] matrix) {
+    public static Result gauss(double[][] matrix) {
         /*
         ResultSet - Класс который хранит все результаты метода.
         Нужен для избежания "Говорящих методов"(Когда методы используют System.out.println)
+        Сохранение оригинальной матрицы.
          */
-        ResultSet resultSet  = new ResultSet();
+        double[][] original_matrix = matrix;
+        Result resultSet  = new Result();
+        resultSet.setMatrix(matrix);
         /*
         Нахождение определителя
          */
@@ -95,7 +98,7 @@ public class Main {
         /*
         Добавление вектора неизвестных в ResultSet
          */
-        resultSet.addX(x);
+        resultSet.setX(x);
         /*
         Вычисление и добавления вектора невязок
          */
