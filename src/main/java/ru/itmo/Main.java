@@ -246,4 +246,35 @@ public class Main {
         }
         return null;
     }
+
+
+    /*Метод Гаусса*/
+    public ResultSet gauss(double[][] matrix) {
+        //matrix[N][N+1]
+        double[] xx = new double[matrix.length+1];
+        double tmp;
+        ResultSet resultSet  = new ResultSet();
+        int N = matrix.length;
+        /*прямой ход*/
+        for (int i = 0; i < N; i++) {
+            tmp = matrix[i][i];
+            for (int j = N; j >= i; j--)
+                matrix[i][j] /= tmp;
+            for (int j = i + 1; j < N; j++) {
+                tmp = matrix[j][i];
+                for (int k = N; k >= i; k--)
+                    matrix[j][k] -= tmp * matrix[i][k];
+            }
+        }
+        /*обратный ход*/
+        xx[N - 1] = matrix[N - 1][N];
+        for (int i = N - 2; i >= 0; i--) {
+            xx[i] = matrix[i][N];
+            for (int j = i + 1; j < N; j++) {
+                xx[i] -= matrix[i][j] * xx[j];
+            }
+        }
+
+        return resultSet;
+    }
 }
