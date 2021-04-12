@@ -79,7 +79,7 @@ public class Main {
             }
         }
         /*
-        Обратный ход -
+        Обратный ход - нахождение неизвестных x
         */
         x[matrix.length - 1] = matrix[matrix.length - 1][matrix.length];
         for (int i = matrix.length - 2; i >= 0; i--) {
@@ -88,14 +88,23 @@ public class Main {
                 x[i] -= matrix[i][j] * x[j];
             }
         }
-        // Добавление треугольной матрицы в ResultSet
+        /*
+        Добавление треугольной матрицы в ResultSet
+         */
         resultSet.setTriangleMatrix(matrix);
-        // Добавление вектора неизвестных в ResultSet
+        /*
+        Добавление вектора неизвестных в ResultSet
+         */
         resultSet.addX(x);
+        /*
+        Вычисление и добавления вектора невязок
+         */
         resultSet.setResiduals(findResiduals(matrix, x));
         return resultSet;
     }
-    // Нахождение невязок
+    /*
+    Нахождение невязок
+     */
     public static double[] findResiduals(double[][] matrix, double[] x) {
         double[] residuals = new double[matrix.length];
         for(int i = 0; i < matrix.length; i++)
@@ -109,6 +118,10 @@ public class Main {
         }
         return residuals;
     }
+
+    /*
+    Нахождение определителя
+     */
     public static double det(double[][] matrix){
         double EPS = 1E-9;
         double det = 1;
@@ -125,13 +138,17 @@ public class Main {
                 break;
             }
 
-            //swab
+            /*
+            swab - обмен местами строки i и k
+             */
             for(int j = 0; j < n; j++){
                 double t = matrix[i][j];
                 matrix[i][j] = matrix[k][j];
                 matrix[k][j]=t;
             }
+
             if (i != k) det = -det;
+
             det *= matrix[i][i];
             for (int j=i+1; j<n; ++j) {
                 matrix[i][j] /= matrix[i][i];
