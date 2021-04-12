@@ -102,7 +102,7 @@ public class Main {
         /*
         Вычисление и добавления вектора невязок
          */
-        resultSet.setResiduals(findResiduals(matrix, x));
+        resultSet.setResiduals(findResiduals(original_matrix, x));
         return resultSet;
     }
     /*
