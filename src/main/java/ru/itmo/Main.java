@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 public class Main {
     static final Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
 
         // \n - перенос на другую строку
@@ -56,13 +57,13 @@ public class Main {
     }
 
     private static double[][] check(double[][] matrix) {
-        if(check_matrix(matrix)) return matrix;
+        if (check_matrix(matrix)) return matrix;
         else return permuteMatrixHelper(matrix, 0);
     }
 
     private static boolean check_matrix(double[][] matrix) {
-        for(int i = 0; i < matrix.length; i++){
-            if(matrix[i][i] == 0) return false;
+        for (int i = 0; i < matrix.length; i++) {
+            if (matrix[i][i] == 0) return false;
         }
         return true;
     }
@@ -87,14 +88,14 @@ public class Main {
 
     public static double[][] permuteMatrixHelper(double[][] matrix, int index) {
         for (int i = index; i < matrix.length; i++) {
-            if (check_matrix(matrix)){
+            if (check_matrix(matrix)) {
                 return matrix;
             }
             double[] t = matrix[index];
             matrix[index] = matrix[i];
             matrix[i] = t;
-            if(permuteMatrixHelper(matrix, index + 1) != null){
-                if(check_matrix(Objects.requireNonNull(permuteMatrixHelper(matrix, index + 1)))){
+            if (permuteMatrixHelper(matrix, index + 1) != null) {
+                if (check_matrix(Objects.requireNonNull(permuteMatrixHelper(matrix, index + 1)))) {
                     return matrix;
                 }
             }
@@ -109,13 +110,12 @@ public class Main {
     public static void findSolution(double[][] matrix) {
         // Нахождение решения
         matrix = check(matrix);
-        if(matrix != null) {
+        if (matrix != null) {
             // Получение решения
             Result resultSet = gauss(matrix);
             // вызов метода print, который печатает результат из Result
             resultSet.print();
-        }
-        else{
+        } else {
             System.out.println("В диагонали есть нули и это не исправить");
         }
     }
@@ -128,7 +128,7 @@ public class Main {
         Сохранение оригинальной матрицы.
          */
         double[][] original_matrix = matrix;
-        Result resultSet  = new Result();
+        Result resultSet = new Result();
         resultSet.setMatrix(matrix);
 
         double buffer;
@@ -136,22 +136,18 @@ public class Main {
         /*
         Прямой ход - преобразование в треугольную матрицу
         */
-        int n = matrix.length;
-        for (int k=0;k<n;k++)
-        {
-            for (int i=k+1;i<n;i++)
-            {
-                double mu=matrix[i][k]/matrix[k][k];
-                for (int j=0;j<n;j++)
-                    matrix[i][j]-=matrix[k][j]*mu;
-                matrix[i][matrix.length]-=matrix[k][matrix.length]*mu;
+        for(int j=0; j< matrix.length; j++) {
+            for(int i=j+1; i< matrix.length; i++) {
+                double temp = matrix[i][j]/matrix[j][j];
+                for(int k=0; k <= matrix.length; k++)
+                    matrix[i][k]-=matrix[j][k]*temp;
             }
         }
         /*
         Поиск определителя
         */
         int det = 1;
-        for(int i = 0; i < matrix.length; i++){
+        for (int i = 0; i < matrix.length; i++) {
             det *= matrix[i][i];
         }
         resultSet.setDet(det);
@@ -167,10 +163,9 @@ public class Main {
 //        }
         double d;
         double s;
-        for (int k = matrix.length-1; k >= 0; k--){
+        for (int k = matrix.length - 1; k >= 0; k--) {
             d = 0;
-            for (int j = k; j < n; j++)
-            {
+            for (int j = k; j < matrix.length; j++) {
                 s = matrix[k][j] * x[j]; // формула (4)
                 d = d + s; // формула (4)
             }
@@ -211,12 +206,10 @@ public class Main {
      */
     public static double[] findResiduals(double[][] matrix, double[] x) {
         double[] residuals = new double[matrix.length];
-        for(int i = 0; i < matrix.length; i++)
-        {
-            float S=0;
-            for(int j = 0; j < matrix.length; j++)
-            {
-                S += matrix[i][j] * x[j] ;
+        for (int i = 0; i < matrix.length; i++) {
+            float S = 0;
+            for (int j = 0; j < matrix.length; j++) {
+                S += matrix[i][j] * x[j];
             }
             residuals[i] = S - matrix[i][matrix.length];
         }
@@ -229,20 +222,20 @@ public class Main {
     EPS нужен для округления в сторону нуля, тк double дает погрешность.
     Math.abs - метод для получения модуля.
      */
-    public static double det(double[][] matrix){
+    public static double det(double[][] matrix) {
         double EPS = 1E-9;
         double det = 1;
-        for (int i=0; i<matrix.length; ++i) {
+        for (int i = 0; i < matrix.length; ++i) {
             int k = i;
 
-            for (int j=i+1; j<matrix.length; ++j) {
+            for (int j = i + 1; j < matrix.length; ++j) {
                 if (Math.abs(matrix[j][i]) > Math.abs(matrix[k][i])) {
                     k = j;
                 }
             }
 
             // Округление к нулю
-            if (Math.abs (matrix[k][i]) < EPS) {
+            if (Math.abs(matrix[k][i]) < EPS) {
                 det = 0;
                 break;
             }
@@ -250,21 +243,21 @@ public class Main {
             /*
             swab - обмен местами строки i и k
              */
-            for(int j = 0; j < matrix.length; j++){
+            for (int j = 0; j < matrix.length; j++) {
                 double t = matrix[i][j];
                 matrix[i][j] = matrix[k][j];
-                matrix[k][j]=t;
+                matrix[k][j] = t;
             }
 
 
             if (i != k) det = -det;
 
             det *= matrix[i][i];
-            for (int j=i+1; j<matrix.length; ++j) {
+            for (int j = i + 1; j < matrix.length; ++j) {
                 matrix[i][j] /= matrix[i][i];
             }
 
-            for (int j=0; j<matrix.length; ++j) {
+            for (int j = 0; j < matrix.length; ++j) {
                 if (j != i && Math.abs(matrix[j][i]) > EPS) {
                     for (int t = i + 1; t < matrix.length; ++t) {
                         matrix[j][t] -= matrix[i][t] * matrix[j][i];

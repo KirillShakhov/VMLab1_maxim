@@ -38,7 +38,7 @@ public class Result {
     public void printMatrix(ArrayList<ArrayList<Double>> m){
         for (ArrayList<Double> line : m) {
             for (Double i : line) {
-                System.out.print(i + " ");
+                System.out.print(String.format("%.6f",i) + " ");
             }
             System.out.println();
         }
