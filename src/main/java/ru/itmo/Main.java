@@ -96,9 +96,9 @@ public class Main {
                     return matrix;
                 }
             }
-            t = matrix[index];
-            matrix[index] = matrix[i];
-            matrix[i] = t;
+//            t = matrix[index];
+//            matrix[index] = matrix[i];
+//            matrix[i] = t;
         }
         return null;
     }
