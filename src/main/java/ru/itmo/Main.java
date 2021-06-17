@@ -1,6 +1,7 @@
 package ru.itmo;
 
 
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Main {
@@ -48,17 +49,73 @@ public class Main {
                     e.printStackTrace();
                 }
             }
-            // Нахождение решения
             findSolution(matrix);
         }
     }
 
+    private static double[][] check(double[][] matrix) {
+        if(check_matrix(matrix)) return matrix;
+        else return permuteMatrixHelper(matrix, 0);
+    }
+
+    private static boolean check_matrix(double[][] matrix) {
+        for(int i = 0; i < matrix.length; i++){
+            if(matrix[i][i] == 0) return false;
+        }
+        return true;
+    }
+//    private static double[][] fix_matrix(double[][] matrix) {
+//        int size = matrix.length-1;
+//        for(int i=-1; i<matrix.length-1;i++){
+//            if(i>-1){
+//                double[] tmp = matrix[size-(i+1)];
+//                matrix[size-(i+1)]=matrix[size-i];
+//                matrix[size-i]=tmp;
+//            }
+//            for (double[] doubles : matrix) {
+//                StringBuilder s = new StringBuilder();
+//                for (int f = 0; f < matrix.length; f++) {
+//                    s.append(doubles[f]).append(" ");
+//                }
+//                System.out.println(s);
+//            }
+//        }
+//        return null;
+//    }
+
+    public static double[][] permuteMatrixHelper(double[][] matrix, int index) {
+        for (int i = index; i < matrix.length; i++) {
+            if (check_matrix(matrix)){
+                return matrix;
+            }
+            double[] t = matrix[index];
+            matrix[index] = matrix[i];
+            matrix[i] = t;
+            if(permuteMatrixHelper(matrix, index + 1) != null){
+                if(check_matrix(Objects.requireNonNull(permuteMatrixHelper(matrix, index + 1)))){
+                    return matrix;
+                }
+            }
+            t = matrix[index];
+            matrix[index] = matrix[i];
+            matrix[i] = t;
+        }
+        return null;
+    }
+
     // Нахождение решения с проверкой и исправлением диагонального преобладания
     public static void findSolution(double[][] matrix) {
-        // Получение решения
-        Result resultSet = gauss(matrix);
-        // вызов метода print, который печатает результат из Result
-        resultSet.print();
+        // Нахождение решения
+        matrix = check(matrix);
+        if(matrix != null) {
+            // Получение решения
+            Result resultSet = gauss(matrix);
+            // вызов метода print, который печатает результат из Result
+            resultSet.print();
+        }
+        else{
+            System.out.println("В диагонали есть нули и это не исправить");
+        }
     }
 
     /*Метод Гаусса*/
