@@ -1,6 +1,8 @@
 package ru.itmo;
 
 
+import org.w3c.dom.ls.LSOutput;
+
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -128,37 +130,51 @@ public class Main {
         double[][] original_matrix = matrix;
         Result resultSet  = new Result();
         resultSet.setMatrix(matrix);
-        /*
-        Нахождение определителя
-         */
-        resultSet.setDet(det(matrix));
 
         double buffer;
         double[] x = new double[matrix.length];
         /*
         Прямой ход - преобразование в треугольную матрицу
         */
-        for (int i = 0; i < matrix.length; i++) {
-            buffer = matrix[i][i];
-            for (int j = matrix.length; j >= i; j--) {
-                matrix[i][j] = matrix[i][j] / buffer;
-            }
-            for (int j = i + 1; j < matrix.length; j++) {
-                buffer = matrix[j][i];
-                for (int k = matrix.length; k >= i; k--) {
-                    matrix[j][k] -= buffer * matrix[i][k];
-                }
+        int n = matrix.length;
+        for (int k=0;k<n;k++)
+        {
+            for (int i=k+1;i<n;i++)
+            {
+                double mu=matrix[i][k]/matrix[k][k];
+                for (int j=0;j<n;j++)
+                    matrix[i][j]-=matrix[k][j]*mu;
+                matrix[i][matrix.length]-=matrix[k][matrix.length]*mu;
             }
         }
         /*
+        Поиск определителя
+        */
+        int det = 1;
+        for(int i = 0; i < matrix.length; i++){
+            det *= matrix[i][i];
+        }
+        resultSet.setDet(det);
+        /*
         Обратный ход - нахождение неизвестных x
         */
-        x[matrix.length - 1] = matrix[matrix.length - 1][matrix.length];
-        for (int i = matrix.length - 2; i >= 0; i--) {
-            x[i] = matrix[i][matrix.length];
-            for (int j = i + 1; j < matrix.length; j++) {
-                x[i] -= matrix[i][j] * x[j];
+//        x[matrix.length - 1] = matrix[matrix.length - 1][matrix.length];
+//        for (int i = matrix.length - 2; i >= 0; i--) {
+//            x[i] = matrix[i][matrix.length];
+//            for (int j = i + 1; j < matrix.length; j++) {
+//                x[i] -= matrix[i][j] * x[j];
+//            }
+//        }
+        double d;
+        double s;
+        for (int k = matrix.length-1; k >= 0; k--){
+            d = 0;
+            for (int j = k; j < n; j++)
+            {
+                s = matrix[k][j] * x[j]; // формула (4)
+                d = d + s; // формула (4)
             }
+            x[k] = (matrix[k][matrix.length] - d) / matrix[k][k]; // формула (4)
         }
         /*
         Добавление треугольной матрицы в ResultSet
@@ -176,6 +192,16 @@ public class Main {
         resultSet.setResiduals(findResiduals(original_matrix, x));
         return resultSet;
     }
+
+    private static double det2(double[][] matrix) {
+        double s = 1;
+        for (double[] doubles : matrix) {
+            s *= 1 * doubles[matrix.length];
+        }
+        return s;
+
+    }
+
     /*
     Нахождение невязок.
     Методом подстановки в матрицу.
